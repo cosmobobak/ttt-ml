@@ -31,7 +31,7 @@ class State:
         )
 
     def get_turn(self) -> int:
-        return -1 if (self.move_count % 2) else 1
+        return -1 if (self.move_count & 1) else 1
 
     def get_move_counter(self) -> int:
         return self.move_count
@@ -45,7 +45,7 @@ class State:
 
     def probe_spot(self, i: int) -> bool:
         # tests the bit of the most recently played side
-        return self.node[(self.move_count + 1) % 2][i] == 1
+        return self.node[(self.move_count + 1) & 1][i] == 1
 
     def is_full(self):
         return all((self.pos_filled(i) for i in range(9)))
@@ -67,7 +67,7 @@ class State:
         return builder
 
     def play(self, i):
-        self.node[self.move_count % 2][i] = 1
+        self.node[self.move_count & 1][i] = 1
         self.move_count += 1
         self.stack.append(i)
 
@@ -75,7 +75,7 @@ class State:
         assert self.move_count > 0
         i = self.stack.pop()
         self.move_count -= 1
-        self.node[self.move_count % 2][i] = 0
+        self.node[self.move_count & 1][i] = 0
 
     def push(self, i):
         self.play(i)
