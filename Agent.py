@@ -9,12 +9,12 @@ from tensorflow.keras.models import Model
 PLAYER_TWO = -1
 
 class Agent:
-    def __init__(self, currentModel, side) -> None:
-        self.model: Model = currentModel
+    def __init__(self, input_model, side) -> None:
+        self.model: Model = input_model
         self.side = side
         self.epsilon = 0.1
 
-    def takeBestAction(self, state) -> None:
+    def take_best_action(self, state) -> None:
         # evaluate all future states (generate them and model.__call__())
         evals: np.ndarray = self.model(np.array([child for child in state.children()])).numpy()
 
@@ -24,14 +24,14 @@ class Agent:
         chosen_move = state.legal_moves()[np.argmax(evals)]
         state.play(chosen_move)
 
-    def takeRandomAction(self, state: State) -> None:
+    def take_random_action(self, state: State) -> None:
         state.play(choice(state.legal_moves()))
 
-    def takeLearningAction(self, state: State) -> None:
+    def take_epsilon_action(self, state: State) -> None:
         # generate random value between 0 and 1
         # if value > epsilon, take argmax, else move randomly
         
         if random() > self.epsilon:
-            self.takeBestAction(state)
+            self.take_best_action(state)
         else:
-            self.takeRandomAction(state)
+            self.take_random_action(state)

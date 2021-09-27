@@ -11,13 +11,13 @@ BATCH_SIZE = 1
 
 class MLPMaker:
     def __init__(self, xbatch_size: int = BATCH_SIZE) -> None:
-        inputLayer = Input(
+        input_layer = Input(
             shape=(2, 3, 3), batch_size=xbatch_size, name="input")
 
         #################################################################
         ##################### FULLY CONNECTED OUT #######################
         #################################################################
-        x = Flatten()(inputLayer)
+        x = Flatten()(input_layer)
         # x = Dense(2048, activation="relu", name="Dense0")(x)
         # x = Dense(2048, activation="relu", name="Dense1")(x)
         # x = Dense(64, activation="relu", name="Dense2")(x)
@@ -25,15 +25,15 @@ class MLPMaker:
         x = Dense(64, activation="relu", name="Dense4")(x)
         
         outputLayer = Dense(1, activation="tanh", name="eval")(x)
-        self.evalModel = Model(inputs=inputLayer, outputs=outputLayer)
+        self.evaluation_model = Model(inputs=input_layer, outputs=outputLayer)
 
-        self.evalModel.compile(
+        self.evaluation_model.compile(
             optimizer="sgd",
             loss="mse",
             metrics=[],
         )
 
-        self.evalModel.summary()
+        self.evaluation_model.summary()
 
-    def __call__(self) -> Model:
-        return self.evalModel
+    def get_model(self) -> Model:
+        return self.evaluation_model
