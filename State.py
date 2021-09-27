@@ -1,6 +1,11 @@
 from random import choice
 from typing import List
 import numpy as np
+
+import os
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 from tensorflow.python.keras.engine.training import Model
 
 class State:

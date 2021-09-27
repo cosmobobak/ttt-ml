@@ -1,7 +1,9 @@
 from State import State
 import numpy as np
 from random import random, choice
+import os
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from tensorflow.keras.models import Model
 
 PLAYER_TWO = -1
