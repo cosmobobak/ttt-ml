@@ -4,7 +4,7 @@ from copy import copy
 
 def oracle_value(state: State) -> float:
     mutator = copy(state)
-    return negamax(mutator, a=float('-inf'), b=float('inf'), depth=10)
+    return negamax(mutator, a=float('-inf'), b=float('inf'), depth=10) * state.get_turn()
 
 
 def negamax(state: State, a: float, b: float, depth: int) -> float:
