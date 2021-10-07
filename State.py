@@ -1,14 +1,15 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from random import choice
 from typing import List
 import numpy as np
 
-import os
-
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 from tensorflow.python.keras.engine.training import Model
 
 class State:
+    X, O = 1, -1
+
     def __init__(self, input_node=None) -> None:
         if input_node is not None:
             self.node = input_node
@@ -19,11 +20,14 @@ class State:
                     np.zeros(9, dtype=int)
                 ]
             )
-        self.move_count = 0
+        self.move_count = self.node.sum()
         self.stack = []
 
-    def __eq__(self, other) -> bool:
-        return self.node[0] == other.node[0] and self.node[1] == other.node[1]
+    def __eq__(self, other: "State") -> bool:
+        return (self.node == other.node).all()
+
+    def __hash__(self) -> int:
+        return hash(self.node.tostring())
 
     def reset(self) -> None:
         self.move_count = 0
@@ -31,7 +35,10 @@ class State:
         self.node: np.ndarray = np.zeros((2, 9))
 
     def get_turn(self) -> int:
-        return -1 if (self.move_count & 1) else 1
+        return self.O if (self.move_count & 1) else self.X
+
+    def get_turn_as_str(self) -> str:
+        return 'O' if (self.move_count & 1) else 'X'
 
     def get_move_counter(self) -> int:
         return self.move_count
@@ -77,6 +84,10 @@ class State:
     def push(self, i) -> None:
         self.play(i)
 
+    def push_ret(self, i) -> "State":
+        self.push(i)
+        return self
+
     def pop(self) -> None:
         self.unplay()
 
@@ -101,7 +112,7 @@ class State:
             
         return 0
 
-    def is_game_over(self) -> bool:
+    def is_terminal(self) -> bool:
         return self.is_full() or (self.evaluate() != 0)
 
     def legal_moves(self) -> "list[int]":
@@ -111,7 +122,7 @@ class State:
         cs = []
         for move in self.legal_moves():
             self.play(move)
-            cs.append(self.vectorise().copy())
+            cs.append(self.clone())
             self.unplay()
 
         return cs
@@ -120,7 +131,32 @@ class State:
         self.play(choice(self.legal_moves()))
 
     def vectorise(self) -> np.ndarray:
-        return np.reshape(self.node, (2, 3, 3))
+        return np.reshape(self.node.copy(), (2, 3, 3))
 
     def flatten(self) -> np.ndarray:
-        return np.reshape(self.node, (18))
+        return np.reshape(self.node.copy(), (18))
+
+    def clone(self) -> "State":
+        return State(self.node.copy())
+
+
+def perft(state: State, ss: "set[State]"):
+    ss.add(state.clone())
+    if state.is_terminal():
+        return
+    for move in state.legal_moves():
+        state.push(move)
+        perft(state, ss)
+        state.pop()
+
+FIRST_9_STATES: "list[State]" = [
+    State().push_ret(0),
+    State().push_ret(1),
+    State().push_ret(2),
+    State().push_ret(3),
+    State().push_ret(4),
+    State().push_ret(5),
+    State().push_ret(6),
+    State().push_ret(7),
+    State().push_ret(8)
+]
