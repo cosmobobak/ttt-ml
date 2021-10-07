@@ -141,6 +141,8 @@ class State:
 
 
 def perft(state: State, ss: "set[State]"):
+    if state in ss:
+        return
     ss.add(state.clone())
     if state.is_terminal():
         return
