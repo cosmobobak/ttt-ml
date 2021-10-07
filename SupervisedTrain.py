@@ -1,4 +1,5 @@
 import os
+from random import shuffle
 
 from ModelTools import model_evaluate
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -22,6 +23,10 @@ perft(State(), positions_set)
 # Make the positions a list
 print("Making positions a list...")
 positions = list(positions_set)
+
+# shuffle the positions
+print("Shuffling positions...")
+shuffle(positions)
 
 # create xs
 print(f"Vectorising...")
