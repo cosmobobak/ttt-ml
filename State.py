@@ -14,13 +14,8 @@ class State:
         if input_node is not None:
             self.node = input_node
         else:
-            self.node: np.ndarray = np.array(
-                [
-                    np.zeros(9, dtype=int),
-                    np.zeros(9, dtype=int)
-                ]
-            )
-        self.move_count = self.node.sum()
+            self.node: np.ndarray = np.zeros((2, 9))
+        self.move_count = int(self.node.sum())
         self.stack = []
 
     def __eq__(self, other: "State") -> bool:
