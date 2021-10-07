@@ -15,7 +15,7 @@ class MultilayerPerceptron:
         #################################################################
         x = Flatten()(input_layer)
         x = Dense(16, activation="relu", name="Dense0")(x)
-        x = Dense(16, activation="relu", name="Dense1")(x)
+        x = Dense(8, activation="relu", name="Dense1")(x)
         
         output_layer = Dense(1, activation="tanh", name="eval")(x)
         

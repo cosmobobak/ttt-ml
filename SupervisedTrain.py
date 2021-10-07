@@ -5,7 +5,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from Hyperparameters import BATCH_SIZE, EPOCHS, VALIDATION_SPLIT
 from State import State, perft
 from NetMaker import MultilayerPerceptron
-from Oracle import oracle_value, oracle_value_wdl
+from Oracle import oracle_value
 import numpy as np
 
 debug = True
