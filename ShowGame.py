@@ -12,7 +12,7 @@ if __name__ == '__main__':
 
     # load the model
     print(f"Loading model!")
-    model_name = f"{input('Enter model name ==> ')}.h5"
+    model_name = f"{input('Enter model name (XXXX.h5) ==> ')}"
     model.load_weights(model_name)
 
     game = State()
