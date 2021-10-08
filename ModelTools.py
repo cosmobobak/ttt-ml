@@ -18,7 +18,7 @@ def evaluate_states_with_model(ss: "list[State]", m: "Model") -> "list[float]":
     """
     Evaluates a list of states with a model and returns a list of the values.
     """
-    predictions = m.predict(np.array([s.vectorise() for s in ss]))
+    predictions = m.predict(np.array([s.vectorise_chlast() for s in ss]))
     return [p[0] for p in predictions]
 
 def best_state_given_model(ss: "list[State]", m: "Model") -> "State":
@@ -38,7 +38,7 @@ def model_evaluate(s: State, m: "Model") -> float:
     """
     Evaluates a single state with a model and returns the value.
     """
-    return m.predict(np.array([s.vectorise()]))[0][0]
+    return m.predict(np.array([s.vectorise_chlast()]))[0][0]
 
 if __name__ == "__main__":
     # Create a random untrained model

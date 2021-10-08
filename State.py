@@ -128,7 +128,12 @@ class State:
         self.play(choice(self.legal_moves()))
 
     def vectorise(self) -> np.ndarray:
+        print("WARNING: using vectorise() is likely to cause issues, recommend vectorise_chlast.")
         return np.reshape(self.node.copy(), (2, 3, 3))
+
+    def vectorise_chlast(self) -> np.ndarray:
+        out = np.reshape(self.node.copy(), (2, 3, 3))
+        return np.swapaxes(out, 0, 2)
 
     def flatten(self) -> np.ndarray:
         return np.reshape(self.node.copy(), (18))
