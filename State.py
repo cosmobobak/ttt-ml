@@ -1,4 +1,6 @@
 import os
+
+from Hyperparameters import DEBUG
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from random import choice
 from typing import List
