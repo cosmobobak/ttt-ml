@@ -10,8 +10,9 @@ class MultilayerPerceptron:
             shape=(3, 3, 2), name="input")
 
         x = Flatten()(input_layer)
-        x = Dense(16, activation="relu", name="Dense0")(x)
-        x = Dense(8, activation="relu", name="Dense1")(x)
+        x = Dense(32, activation="relu", name="Dense0")(x)
+        x = Dense(16, activation="relu", name="Dense1")(x)
+        x = Dense(8, activation="relu", name="Dense2")(x)
         
         output_layer = Dense(1, activation="tanh", name="eval")(x)
         
