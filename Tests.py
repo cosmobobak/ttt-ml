@@ -9,7 +9,7 @@ def test_move_make():
     expected = np.zeros((2, 3, 3), dtype=int)
     expected[0, 1, 1] = 1
 
-    assert np.array_equal(board.vectorise(), expected), f"Error: {board.vectorise()} != {expected}"
+    assert np.array_equal(board.vectorise_chlast(), expected), f"Error: {board.vectorise_chlast()} != {expected}"
 
 
 def test_make_unmake():
@@ -27,7 +27,7 @@ def test_make_unmake():
 
     expected = np.zeros((2, 3, 3), dtype=int)
 
-    assert np.array_equal(board.vectorise(), expected), f"Error: {board.vectorise()} != {expected}"
+    assert np.array_equal(board.vectorise_chlast(), expected), f"Error: {board.vectorise_chlast()} != {expected}"
 
 def test_oracle():
     board = State()

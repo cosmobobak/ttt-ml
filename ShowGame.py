@@ -1,14 +1,14 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from State import State
-from NetMaker import MultilayerPerceptron
+from NetMaker import ConvolutionalNeuralNetwork, MultilayerPerceptron
 from Oracle import oracle_value
 from ModelTools import best_state_given_model, model_evaluate
 
 if __name__ == '__main__':
     # create a model to predict evaluations of a given state
     print(f"Creating model!")
-    model = MultilayerPerceptron().get_model()
+    model = ConvolutionalNeuralNetwork().get_model()
 
     # load the model
     print(f"Loading model!")

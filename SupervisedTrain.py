@@ -5,13 +5,9 @@ from ModelTools import model_evaluate
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from Hyperparameters import BATCH_SIZE, EPOCHS, VALIDATION_SPLIT, DEBUG
 from State import State, perft
-from NetMaker import MultilayerPerceptron
+from NetMaker import ConvolutionalNeuralNetwork, MultilayerPerceptron
 from Oracle import oracle_value
 import numpy as np
-
-# create a model to predict evaluations of a given state 
-print(f"Creating model!")  
-model = MultilayerPerceptron().get_model()
 
 # get a list of every position
 print("Getting positions...")
@@ -28,7 +24,7 @@ shuffle(positions)
 
 # create xs
 print(f"Vectorising...")
-xs = np.array([s.vectorise() for s in positions])
+xs = np.array([s.vectorise_chlast() for s in positions])
 
 # evaluate all the positions
 print(f"Evaluating...")
@@ -40,6 +36,10 @@ if DEBUG:
     for x, y in slice_xy:
         print(f"{x} -> {y}")
         print()
+
+# create a model to predict evaluations of a given state
+print(f"Creating model!")
+model = ConvolutionalNeuralNetwork().get_model()
 
 # train the model
 print(f"Training... ({BATCH_SIZE = })")
