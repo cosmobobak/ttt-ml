@@ -8,6 +8,7 @@ from State import State, perft
 from NetMaker import ConvolutionalNeuralNetwork, MultilayerPerceptron
 from Oracle import oracle_value
 import numpy as np
+import tensorflow as tf
 
 # get a list of every position
 print("Getting positions...")
@@ -41,9 +42,14 @@ if DEBUG:
 print(f"Creating model!")
 model = ConvolutionalNeuralNetwork().get_model()
 
+# create TensorBoard callback
+print(f"Creating TensorBoard callback...")
+logdir = os.path.join(os.path.curdir, "logs")
+tb_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir)
+
 # train the model
 print(f"Training... ({BATCH_SIZE = })")
-model.fit(xs, ys, epochs=EPOCHS, batch_size=BATCH_SIZE, validation_split=VALIDATION_SPLIT)
+model.fit(xs, ys, epochs=EPOCHS, batch_size=BATCH_SIZE, validation_split=VALIDATION_SPLIT, callbacks=[tb_callback])
 
 # save the model
 print(f"Saving...")
