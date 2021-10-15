@@ -41,7 +41,7 @@ class ConvolutionalNeuralNetwork:
             shape=(3, 3, 2), name="input")
 
         x = Conv2D(
-            filters=32,
+            filters=256,
             kernel_size=3,
             strides=1,
             padding="same",
@@ -50,7 +50,7 @@ class ConvolutionalNeuralNetwork:
             input_shape=(3, 3, 2),
         )(input_layer)
         x = Conv2D(
-            filters=32,
+            filters=256,
             kernel_size=3,
             strides=1,
             padding="same",
@@ -59,7 +59,7 @@ class ConvolutionalNeuralNetwork:
         )(x)
         preconv = x
         postconv = Conv2D(
-            filters=32,
+            filters=256,
             kernel_size=3,
             strides=1,
             padding="same",
@@ -68,7 +68,7 @@ class ConvolutionalNeuralNetwork:
         )(preconv)
         preconv = Add()([preconv, postconv])
         postconv = Conv2D(
-            filters=32,
+            filters=256,
             kernel_size=3,
             strides=1,
             padding="same",
@@ -77,7 +77,7 @@ class ConvolutionalNeuralNetwork:
         )(preconv)
         preconv = Add()([preconv, postconv])
         postconv = Conv2D(
-            filters=32,
+            filters=256,
             kernel_size=3,
             strides=1,
             padding="same",

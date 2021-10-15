@@ -1,10 +1,9 @@
 import os
-from random import shuffle
-
-from ModelTools import model_evaluate
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+from random import shuffle
+from ModelTools import model_evaluate
 from Hyperparameters import BATCH_SIZE, EPOCHS, VALIDATION_SPLIT, DEBUG
-from State import State, perft
+from State import State
 from NetMaker import ConvolutionalNeuralNetwork, MultilayerPerceptron
 from Oracle import oracle_value
 import numpy as np
@@ -12,8 +11,7 @@ import tensorflow as tf
 
 # get a list of every position
 print("Getting positions...")
-positions_set: "set[State]" = set()
-perft(State(), positions_set)
+positions_set = State.get_every_state()
 
 # Make the positions a list
 print("Making positions a list...")

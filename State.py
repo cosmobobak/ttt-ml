@@ -141,17 +141,24 @@ class State:
     def clone(self) -> "State":
         return State(self.node.copy())
 
+    @classmethod
+    def _perft(cls, state: "State", ss: "set[State]"):
+        if state in ss:
+            return
+        ss.add(state.clone())
+        if state.is_terminal():
+            return
+        for move in state.legal_moves():
+            state.push(move)
+            cls._perft(state, ss)
+            state.pop()
 
-def perft(state: State, ss: "set[State]"):
-    if state in ss:
-        return
-    ss.add(state.clone())
-    if state.is_terminal():
-        return
-    for move in state.legal_moves():
-        state.push(move)
-        perft(state, ss)
-        state.pop()
+    @classmethod
+    def get_every_state(cls) -> "set[State]":
+        ss = set()
+        state = State()
+        cls._perft(state, ss)
+        return ss
 
 FIRST_9_STATES: "list[State]" = [
     State().push_ret(0),
