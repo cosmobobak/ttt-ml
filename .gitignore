@@ -3,3 +3,4 @@ env/
 .vscode/
 *.h5
 logs/
+az_models/*

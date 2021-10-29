@@ -3,7 +3,6 @@ import os
 from Hyperparameters import DEBUG
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from random import choice
-from typing import List
 import numpy as np
 
 
@@ -11,6 +10,7 @@ from tensorflow.python.keras.engine.training import Model
 
 class State:
     X, O = 1, -1
+    ACTION_SPACE_SIZE = 9
 
     def __init__(self, input_node=None) -> None:
         if input_node is not None:
@@ -30,6 +30,9 @@ class State:
         self.move_count = 0
         self.stack = []
         self.node: np.ndarray = np.zeros((2, 9))
+
+    def set_starting_position(self) -> None:
+        self.reset()
 
     def get_turn(self) -> int:
         return self.O if (self.move_count & 1) else self.X
