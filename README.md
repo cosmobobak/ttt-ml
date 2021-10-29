@@ -6,7 +6,7 @@ This repository contains implementations of various AI techniques for playing Ti
 ## Currently implemented AI algorithms include:
 ### Minimax (with alpha-beta pruning)
 Recursive brute-force search of the solution space, but using a pruning method that ignores parts of the tree that cannot effect the outcome of a search.
-### Supervised learning for a policy network, using an oracle.
+### Supervised learning for a value network, using an oracle.
 Using a training set of (state, value) pairs provided by an oracle (currently set to 10% of the state space), we train a neural network (either MLP or ConvNet) that generalises to the rest of the state space.
 ### CPUCT Tree Search with a two-headed policy-value network.
 AlphaZero / Lc0 style self-play reinforcement learning. Starting from a randomly initialised network, an agent plays itself over and over, updating both move predictions and state-value estimations. 
