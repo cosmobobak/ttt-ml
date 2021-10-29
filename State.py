@@ -127,6 +127,15 @@ class State:
 
         return cs
 
+    def state_action_pairs(self) -> "list[tuple[State, int]]":
+        cs = []
+        for move in self.legal_moves():
+            self.play(move)
+            cs.append((self.clone(), move))
+            self.unplay()
+        
+        return cs
+
     def random_play(self) -> None:
         self.play(choice(self.legal_moves()))
 
@@ -162,6 +171,10 @@ class State:
         state = State()
         cls._perft(state, ss)
         return ss
+
+    @classmethod
+    def state_space(cls) -> int:
+        return 5478
 
 FIRST_9_STATES: "list[State]" = [
     State().push_ret(0),

@@ -39,10 +39,15 @@ def best_state_given_model(ss: "list[State]", m: "Model") -> "State":
     assert all(s.get_turn() == -1 for s in ss) or all(s.get_turn() == 1 for s in ss), f"All states must be of the same turn. state turns: {[s.get_turn() for s in ss]}"
     turn = ss[0].get_turn()
     values = evaluate_states_with_model(ss, m)
-
+    
     is_x_to_move = turn == State.O # comparing against O as these are child positions.
-
-    return ss[np.argmax(values)] if is_x_to_move else ss[np.argmin(values)]
+    
+    if is_x_to_move:
+        index = np.argmax(values)
+    else:
+        index = np.argmin(values)
+    
+    return ss[index]
 
 def best_state_given_twohead(ss: "list[State]", m: "Model") -> "State":
     """
@@ -69,7 +74,7 @@ def twohead_evaluate(s: State, m: "Model") -> float:
     """
     return m(np.array([s.vectorise_chlast()]))[1][0][0]
 
-def twohead_policy(s: State, m: "Model") -> np.ndarray:
+def twohead_policy(s: State, m: "Model") -> int:
     """
     Returns the policy of a single state with a two-head model.
     """
@@ -83,6 +88,19 @@ def twohead_new_state(s: State, m: "Model") -> State:
     out.push(twohead_policy(s, m))
     return out
 
+
+def mcts_policy(s: State, m: "Model") -> int:
+    """
+    Returns the new state of a single state with a MCTS model.
+    """
+    root = copy.deepcopy(s)
+    agent = MCTS(m)
+    r_edge = Edge(None, None)
+    r_node = Node(root, r_edge)
+    probs = agent.search(r_node, 100)
+    move = max(probs, key=lambda x: x[2])[0]  # [2] is the number of simulations
+    return move
+
 def mcts_new_state(s: State, m: "Model") -> State:
     """
     Returns the new state of a single state with a MCTS model.
@@ -92,7 +110,7 @@ def mcts_new_state(s: State, m: "Model") -> State:
     r_edge = Edge(None, None)
     r_node = Node(out, r_edge)
     probs = agent.search(r_node, 100)
-    move = max(probs, key=lambda x: x[1])[0]
+    move = max(probs, key=lambda x: x[2])[0]  # [2] is the number of simulations
     out.push(move)
     return out 
 

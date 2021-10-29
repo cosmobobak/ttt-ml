@@ -4,6 +4,10 @@ def oracle_value(state: State) -> float:
     mutator = state.clone()
     return negamax(mutator, a=float('-inf'), b=float('inf'), depth=10) * state.get_turn()
 
+def perspective_value(state: State) -> float:
+    mutator = state.clone()
+    return negamax(mutator, a=float('-inf'), b=float('inf'), depth=10)
+
 def negamax(state: State, a: float, b: float, depth: int) -> float:
     if depth == 0 or state.is_terminal():
         return state.evaluate() * state.get_turn()
