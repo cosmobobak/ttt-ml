@@ -1,7 +1,7 @@
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 from Hyperparameters import DEBUG
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from random import choice
 import numpy as np
 
