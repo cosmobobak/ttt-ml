@@ -13,5 +13,5 @@ AlphaZero / Lc0 style self-play reinforcement learning. Starting from a randomly
 #### Good resources for this include
 - [Iterated Distillation and Amplification](https://youtu.be/v9M2Ho9I9Qo)
 - [AlphaZero Paper on ArXiv](https://arxiv.org/abs/1712.01815)
-- [Dominik Klein's Neural Networks for Chess](https://github.com/asdfjkl/neural_network_chess)
+- [Dominik Klein's Neural Networks for Chess](https://github.com/asdfjkl/neural_network_chess) (from which our implementation was essentially cloned, with some stylistic changes)
 
