@@ -78,7 +78,15 @@ def twohead_policy(s: State, m: "Model") -> int:
     """
     Returns the policy of a single state with a two-head model.
     """
-    return np.argmax(m(np.array([s.vectorise_chlast()]))[0])
+    probs = m(np.array([s.vectorise_chlast()]))[0][0]
+    sa_pairs = s.state_action_pairs()
+    sa_probs = []
+    # print(sa_pairs)
+    # print(probs)
+    for state, action in sa_pairs:
+        probability = probs[action]
+        sa_probs.append((state, action, probability))
+    return max(sa_probs, key=lambda x: x[2])[1]
 
 def twohead_new_state(s: State, m: "Model") -> State:
     """
@@ -89,7 +97,7 @@ def twohead_new_state(s: State, m: "Model") -> State:
     return out
 
 
-def mcts_policy(s: State, m: "Model") -> int:
+def mcts_policy(s: State, m: "Model", rollouts: int) -> int:
     """
     Returns the new state of a single state with a MCTS model.
     """
@@ -97,11 +105,11 @@ def mcts_policy(s: State, m: "Model") -> int:
     agent = MCTS(m)
     r_edge = Edge(None, None)
     r_node = Node(root, r_edge)
-    probs = agent.search(r_node, 100)
+    probs = agent.search(r_node, rollouts)
     move = max(probs, key=lambda x: x[2])[0]  # [2] is the number of simulations
     return move
 
-def mcts_new_state(s: State, m: "Model") -> State:
+def mcts_new_state(s: State, m: "Model", rollouts: int) -> State:
     """
     Returns the new state of a single state with a MCTS model.
     """
@@ -109,7 +117,7 @@ def mcts_new_state(s: State, m: "Model") -> State:
     agent = MCTS(m)
     r_edge = Edge(None, None)
     r_node = Node(out, r_edge)
-    probs = agent.search(r_node, 100)
+    probs = agent.search(r_node, rollouts)
     move = max(probs, key=lambda x: x[2])[0]  # [2] is the number of simulations
     out.push(move)
     return out 
