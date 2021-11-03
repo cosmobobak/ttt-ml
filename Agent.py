@@ -1,3 +1,4 @@
+from C4State import C4State
 from Oracle import perspective_value
 from State import State
 import numpy as np
@@ -34,6 +35,8 @@ class MinimaxAgent:
         return "MinimaxAgent"
 
     def get_action(self, state: State) -> int:
+        if type(state) == C4State:
+            return 0
         sa_pairs = state.state_action_pairs()
         values = [oracle_value(sa_pair[0]) for sa_pair in sa_pairs]
         if state.get_turn() == State.X:
@@ -68,37 +71,42 @@ class RawAZAgent:
         self.model_name = model_name
 
     def __repr__(self) -> str:
-        return f"RawAZAgent {self.model_name}"
+        return f"RawAZAgent-{self.model_name}"
 
     def get_action(self, state: State) -> int:
         return twohead_policy(state, self.model)
 
     def get_next_state(self, state: State) -> State:
         out = state.clone()
-        out.push(self.get_action(state))
+        move = self.get_action(state)
+        out.push(move)
+        assert out != state, f"RawAZAgent: get_next_state: state is not changed, move: {move}, state: {state}"
         return out
 
 
 class AZAgent:
-    def __init__(self, model: Model, model_name: str) -> None:
+    def __init__(self, model: Model, model_name: str, rollouts: int) -> None:
         self.model = model
         self.model_name = model_name
+        self.rollouts = rollouts
 
     def __repr__(self) -> str:
-        return f"AZAgent {self.model_name}"
+        return f"AZAgent-{self.model_name} ({self.rollouts} rollouts/move)"
 
     def get_action(self, state: State) -> int:
-        return mcts_policy(state, self.model)
+        return mcts_policy(state, self.model, self.rollouts)
 
     def get_next_state(self, state: State) -> State:
-        return mcts_new_state(state, self.model)
+        return mcts_new_state(state, self.model, self.rollouts)
 
-def play_game(agent1, agent2, start=True) -> int:
-    state = State()
+def play_game(agent1, agent2, start=True, game=State) -> int:
+    state = game()
     turn_target = State.X if start else State.O
     while not state.is_terminal():
+        # print(state)
         if state.get_turn() == turn_target:
             state = agent1.get_next_state(state)
         else:
             state = agent2.get_next_state(state)
+    # print(state)
     return state.evaluate() if turn_target == State.X else -state.evaluate()
