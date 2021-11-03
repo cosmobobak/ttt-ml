@@ -1,7 +1,7 @@
 import math
 import random
 from az_method.NodeEdge import Node, Edge
-from State import State
+from C4State import C4State
 
 class MCTS:
     def __init__(self, network) -> None:
@@ -22,7 +22,7 @@ class MCTS:
             for edge, child_node in node.child_edge_node:
                 uct_value = self.uct_value(edge, edge.parent_node.parent_edge.N)
                 val = edge.Q
-                if edge.parent_node.board.get_turn() == State.O:
+                if edge.parent_node.board.get_turn() == C4State.O:
                     val = -val
                 uct_val_child = val + uct_value
                 if uct_val_child > max_uct_value:
@@ -32,7 +32,7 @@ class MCTS:
             for edge, child_node in node.child_edge_node:
                 uct_value = self.uct_value(edge, edge.parent_node.parent_edge.N)
                 val = edge.Q
-                if edge.parent_node.board.get_turn() == State.O:
+                if edge.parent_node.board.get_turn() == C4State.O:
                     val = -val
                 uct_val_child = val + uct_value
                 if uct_val_child == max_uct_value:
@@ -51,9 +51,9 @@ class MCTS:
         winner = node.board.evaluate()
         if terminal:
             v = 0.0
-            if winner == State.X:
+            if winner == C4State.X:
                 v = 1.0
-            elif winner == State.O:
+            elif winner == C4State.O:
                 v = -1.0
             self.backpropagate(v, node.parent_edge)
             return

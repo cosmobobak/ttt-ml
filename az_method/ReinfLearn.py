@@ -3,7 +3,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import numpy as np
 from az_method.MonteCarloTreeSearch import MCTS
 from az_method.NodeEdge import Edge, Node
-from State import State
+from C4State import C4State
 from tensorflow.keras.models import Model
 
 class ReinfLearn:
@@ -15,7 +15,7 @@ class ReinfLearn:
         move_probs_data: "list[np.ndarray]" = []
         values_data: "list[float]" = []
 
-        g = State()
+        g = C4State()
         g.set_starting_position()
 
         while not g.is_terminal():
@@ -26,8 +26,8 @@ class ReinfLearn:
             root_node = Node(g, root_edge)
             mcts_seacher = MCTS(self.model)
 
-            move_probs = mcts_seacher.search(root_node)
-            output_vec = np.zeros(State.ACTION_SPACE_SIZE)
+            move_probs = mcts_seacher.search(root_node, sims=75)
+            output_vec = np.zeros(C4State.ACTION_SPACE_SIZE)
 
             for move, prob, _, _ in move_probs:
                 move_idx = move
@@ -46,9 +46,9 @@ class ReinfLearn:
 
         winner = g.evaluate()
         for _ in move_probs_data:
-            if winner == State.X:
+            if winner == C4State.X:
                 values_data.append(1.0)
-            elif winner == State.O:
+            elif winner == C4State.O:
                 values_data.append(-1.0)
             else:
                 values_data.append(0.0)

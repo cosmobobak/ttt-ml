@@ -7,20 +7,21 @@ from ModelTools import best_state_given_model, best_state_given_twohead, mcts_ne
 import tensorflow.keras as keras
 from tensorflow.keras.models import Model
 import typing
+from C4State import C4State
 
 if __name__ == '__main__':
     # create a model to predict evaluations of a given state
     print(f"Creating model!")
     # model = ConvolutionalNeuralNetwork().get_model()
     model: "Model" = typing.cast(
-        Model, keras.models.load_model("az_models/model_it60.keras"))
+        Model, keras.models.load_model("az_models/model_it70.keras"))
 
     # load the model
     print(f"Loading model!")
     # model_name = f"{input('Enter model name (XXXX.h5) ==> ')}"
     # model.load_weights(model_name)
 
-    game = State()
+    game = C4State()
 
     while not game.is_terminal():
         print(f"\nCurrent board: \n{game}\n")
