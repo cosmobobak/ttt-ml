@@ -1,6 +1,10 @@
+from C4State import C4State
 from State import State
 
 def oracle_value(state: State) -> float:
+    # check for C4State
+    if type(state) == C4State:
+        return 0
     mutator = state.clone()
     return negamax(mutator, a=float('-inf'), b=float('inf'), depth=10) * state.get_turn()
 
