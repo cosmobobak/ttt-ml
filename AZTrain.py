@@ -8,21 +8,27 @@ from tqdm import tqdm
 import numpy as np
 from tensorflow.keras.models import Model
 
+CURRENT_ITERATION = 15
+# starting_model_path = "az_models/random_model.keras"
+starting_model_path = f"az_models/model_it{CURRENT_ITERATION}.keras"
+CURRENT_ITERATION += 1
+
 model: "Model" = typing.cast(
-    Model, keras.models.load_model("az_models/random_model.keras"))
+    Model, keras.models.load_model(starting_model_path))
 
 mcts_seacher = MCTS(model)
 
 learner = ReinfLearn(model)
 
+
 for training_run in range(0, 100):
-    print(f"Training run {training_run}")
+    print(f"Training run {CURRENT_ITERATION+training_run}")
 
     all_pos = []
     all_move_probs = []
     all_values = []
 
-    for j in tqdm(range(0, 500)):
+    for j in tqdm(range(0, 100)):
         pos, move_probs, values = learner.play_game()
 
         all_pos += pos
@@ -49,4 +55,4 @@ for training_run in range(0, 100):
     )
 
     if training_run % 5 == 0:
-        model.save(f"az_models/model_it{training_run}.keras")
+        model.save(f"az_models/model_it{CURRENT_ITERATION+training_run}.keras")
