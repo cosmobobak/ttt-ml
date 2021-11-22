@@ -8,9 +8,9 @@ from tqdm import tqdm
 import numpy as np
 from tensorflow.keras.models import Model
 
-CURRENT_ITERATION = 15
-# starting_model_path = "az_models/random_model.keras"
-starting_model_path = f"az_models/model_it{CURRENT_ITERATION}.keras"
+CURRENT_ITERATION = 0
+starting_model_path = "az_models/random_model.keras"
+# starting_model_path = f"az_models/model_it{CURRENT_ITERATION}.keras"
 CURRENT_ITERATION += 1
 
 model: "Model" = typing.cast(
@@ -28,8 +28,8 @@ for training_run in range(0, 100):
     all_move_probs = []
     all_values = []
 
-    for j in tqdm(range(0, 100)):
-        pos, move_probs, values = learner.play_game()
+    for j in tqdm(range(0, 1000)):
+        pos, move_probs, values = learner.play_game(10)
 
         all_pos += pos
         all_move_probs += move_probs
@@ -54,5 +54,5 @@ for training_run in range(0, 100):
         batch_size=16
     )
 
-    if training_run % 5 == 0:
-        model.save(f"az_models/model_it{CURRENT_ITERATION+training_run}.keras")
+    # if (CURRENT_ITERATION+training_run) % 5 == 0:
+    model.save(f"az_models/model_{CURRENT_ITERATION+training_run}.keras")
