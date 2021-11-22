@@ -10,7 +10,7 @@ class ReinfLearn:
     def __init__(self, model: "Model") -> None:
         self.model = model
     
-    def play_game(self) -> "tuple[list[np.ndarray], list[np.ndarray], list[float]]":
+    def play_game(self, rollouts: int) -> "tuple[list[np.ndarray], list[np.ndarray], list[float]]":
         positions_data: "list[np.ndarray]" = []
         move_probs_data: "list[np.ndarray]" = []
         values_data: "list[float]" = []
@@ -26,7 +26,7 @@ class ReinfLearn:
             root_node = Node(g, root_edge)
             mcts_seacher = MCTS(self.model)
 
-            move_probs = mcts_seacher.search(root_node, sims=75)
+            move_probs = mcts_seacher.search(root_node, sims=rollouts)
             output_vec = np.zeros(C4State.ACTION_SPACE_SIZE)
 
             for move, prob, _, _ in move_probs:
