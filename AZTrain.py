@@ -8,9 +8,12 @@ from tqdm import tqdm
 import numpy as np
 from tensorflow.keras.models import Model
 
+GAMES_PER_RUN = 1000
+ROLLOUTS = 50
+
 CURRENT_ITERATION = 0
 starting_model_path = "az_models/random_model.keras"
-# starting_model_path = f"az_models/model_it{CURRENT_ITERATION}.keras"
+# starting_model_path = f"az_models/model_{CURRENT_ITERATION}.keras"
 CURRENT_ITERATION += 1
 
 model: "Model" = typing.cast(
@@ -23,13 +26,15 @@ learner = ReinfLearn(model)
 
 for training_run in range(0, 100):
     print(f"Training run {CURRENT_ITERATION+training_run}")
+    print(f"Running with {ROLLOUTS} rollouts per move, ")
+    print(f"and {GAMES_PER_RUN} games per training run.")
 
     all_pos = []
     all_move_probs = []
     all_values = []
 
-    for j in tqdm(range(0, 1000)):
-        pos, move_probs, values = learner.play_game(10)
+    for j in tqdm(range(0, GAMES_PER_RUN)):
+        pos, move_probs, values = learner.play_game(ROLLOUTS)
 
         all_pos += pos
         all_move_probs += move_probs
@@ -38,14 +43,6 @@ for training_run in range(0, 100):
     np_pos = np.array(all_pos)
     np_probs = np.array(all_move_probs)
     np_values = np.array(all_values)
-
-    # print(f"num. x: {len(np_pos)}")
-    # print(f"num. y1: {len(np_probs)}")
-    # print(f"num. y2: {len(np_values)}")
-
-    # print(np_pos[0])
-    # print(np_probs[0])
-    # print(np_values[0])
 
     model.fit(
         x=np_pos, 
