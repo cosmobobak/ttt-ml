@@ -35,7 +35,7 @@ if __name__ == '__main__':
         # next_states = game.children()
         # choice = best_state_given_model(next_states, model)
         # choice = best_state_given_twohead(next_states, model)
-        choice = mcts_new_state(game, model)
+        choice = mcts_new_state(game, model, 100)
 
         game = choice
 
