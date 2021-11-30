@@ -2,6 +2,8 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import typing
 import tensorflow.keras as keras
+import tensorflow as tf
+from tensorflow.python.framework.convert_to_constants import convert_variables_to_constants_v2
 from az_method.MonteCarloTreeSearch import MCTS
 from az_method.ReinfLearn import ReinfLearn
 from tqdm import tqdm
@@ -11,9 +13,9 @@ from tensorflow.keras.models import Model
 GAMES_PER_RUN = 1000
 ROLLOUTS = 50
 
-CURRENT_ITERATION = 0
-starting_model_path = "az_models/random_model.keras"
-# starting_model_path = f"az_models/model_{CURRENT_ITERATION}.keras"
+CURRENT_ITERATION = 4
+# starting_model_path = "az_models/random_model.keras"
+starting_model_path = f"az_models/model_{CURRENT_ITERATION}.keras"
 CURRENT_ITERATION += 1
 
 model: "Model" = typing.cast(
@@ -28,25 +30,27 @@ for training_run in range(0, 100):
     print(f"Training run {CURRENT_ITERATION+training_run}")
     print(f"Running with {ROLLOUTS} rollouts per move, ")
     print(f"and {GAMES_PER_RUN} games per training run.")
+    print(f"Starting model: {starting_model_path}")
+    
 
-    all_pos = []
-    all_move_probs = []
+    all_states = []
+    all_actions = []
     all_values = []
 
     for j in tqdm(range(0, GAMES_PER_RUN)):
-        pos, move_probs, values = learner.play_game(ROLLOUTS)
+        states, actions, values = learner.play_game(ROLLOUTS)
 
-        all_pos += pos
-        all_move_probs += move_probs
+        all_states += states
+        all_actions += actions
         all_values += values
 
-    np_pos = np.array(all_pos)
-    np_probs = np.array(all_move_probs)
+    np_states = np.array(all_states)
+    np_actions = np.array(all_actions)
     np_values = np.array(all_values)
 
     model.fit(
-        x=np_pos, 
-        y=[np_probs, np_values], 
+        x=np_states, 
+        y=[np_actions, np_values], 
         epochs=256, 
         batch_size=16
     )
