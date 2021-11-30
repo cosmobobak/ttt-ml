@@ -6,12 +6,12 @@ from C4State import C4State
 import typing
 from tensorflow import keras
 from Agent import *
-from tqdm import tqdm
+from ModelTools import twohead_evaluate
 
 model = typing.cast(
-    Model, keras.models.load_model("az_models/small_it41.keras"))
+    Model, keras.models.load_model("az_models/model_4.keras"))
 
-agent = AZAgent(model, "model_it41", 500)
+agent = AZAgent(model, "model_4", 500)
 
 game = C4State()
 
@@ -19,6 +19,7 @@ while not game.is_terminal():
     print(game)
     agent_move = agent.get_action(game)
     print(agent_move)
+    print(f"network evaluation of this position: {twohead_evaluate(game, agent.model)}")
     game.push(agent_move)
     if game.is_terminal():
         break
