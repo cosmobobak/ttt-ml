@@ -20,6 +20,10 @@ class ReinfLearn:
 
         while not g.is_terminal():
             positions_data.append(g.vectorise_chlast()) 
+            if type(g) == C4State:
+                vect = g.vectorise_chlast()
+                np.flip(vect, axis=1)
+                positions_data.append(vect)
 
             root_edge = Edge(None, None)
             root_edge.N = 1
@@ -42,6 +46,10 @@ class ReinfLearn:
                 if idx == move_idx:
                     next_move = move
             move_probs_data.append(output_vec)
+            if type(g) == C4State:
+                vect = output_vec.copy()
+                np.flip(vect, axis=0)
+                move_probs_data.append(vect)
             g.push(next_move)
 
         winner = g.evaluate()
