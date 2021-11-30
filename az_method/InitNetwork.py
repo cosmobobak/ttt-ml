@@ -2,9 +2,7 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Conv2D, Flatten, Dense, BatchNormalization, Input, concatenate, Reshape, Add, GlobalAveragePooling2D, multiply
-from keras.regularizers import l2
-import tensorflow.keras.backend as K
+from tensorflow.keras.layers import Conv2D, Flatten, Dense, Input, Reshape, Add, GlobalAveragePooling2D, multiply
 
 TTT_DIM = (3, 3, 2)
 TTT_ACTION_SPACE = 9
@@ -29,11 +27,13 @@ def squeeze_excite_block(tensor, ratio=16):
     x = multiply([init, se])
     return x
 
+def cnn_layer(x):
+    return Conv2D(filters=FILTERS, kernel_size=KERNEL_SIZE, padding='same', strides=1,
+                  activation='relu')(x)
+
 def resnet_block(input_layer):
-    x = Conv2D(filters=FILTERS, kernel_size=KERNEL_SIZE, padding='same', strides=1,
-               activation='relu')(input_layer)
-    x = Conv2D(filters=FILTERS, kernel_size=KERNEL_SIZE, padding='same', strides=1,
-               activation='relu')(x)
+    x = cnn_layer(input_layer)
+    x = cnn_layer(x)
     x = squeeze_excite_block(x)
     x = Add()([x, input_layer])
     return x
