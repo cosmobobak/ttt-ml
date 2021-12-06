@@ -89,12 +89,15 @@ class AZAgent:
         self.model = model
         self.model_name = model_name
         self.rollouts = rollouts
+        self.last_dist = None
 
     def __repr__(self) -> str:
         return f"AZAgent-{self.model_name} ({self.rollouts} rollouts/move)"
 
     def get_action(self, state: State) -> int:
-        return mcts_policy(state, self.model, self.rollouts)
+        move, dist = mcts_policy_probs(state, self.model, self.rollouts)
+        self.last_dist = dist
+        return move
 
     def get_next_state(self, state: State) -> State:
         return mcts_new_state(state, self.model, self.rollouts)

@@ -74,6 +74,13 @@ def twohead_evaluate(s: State, m: "Model") -> float:
     """
     return m(np.array([s.vectorise_chlast()]))[1][0][0]
 
+def twohead_policy_vector(s: State, m: "Model") -> np.ndarray:
+    """
+    Returns the policy of a single state with a two-head model.
+    """
+    probs = m(np.array([s.vectorise_chlast()]))[0][0]
+    return probs
+
 def twohead_policy(s: State, m: "Model") -> int:
     """
     Returns the policy of a single state with a two-head model.
@@ -108,6 +115,19 @@ def mcts_policy(s: State, m: "Model", rollouts: int) -> int:
     probs = agent.search(r_node, rollouts)
     move = max(probs, key=lambda x: x[2])[0]  # [2] is the number of simulations
     return move
+
+def mcts_policy_probs(s: State, m: "Model", rollouts: int) -> "tuple[int, list[int]]":
+    """
+    Returns the new state of a single state with a MCTS model.
+    """
+    root = copy.deepcopy(s)
+    agent = MCTS(m)
+    r_edge = Edge(None, None)
+    r_node = Node(root, r_edge)
+    probs = agent.search(r_node, rollouts)
+    move = max(probs, key=lambda x: x[2])[0]  # [2] is the number of simulations
+    dist = list(map(lambda x: x[2], probs))
+    return move, dist
 
 def mcts_new_state(s: State, m: "Model", rollouts: int) -> State:
     """
