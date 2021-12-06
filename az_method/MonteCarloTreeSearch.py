@@ -2,6 +2,7 @@ import math
 import random
 from az_method.NodeEdge import Node, Edge
 from C4State import C4State
+from tqdm import tqdm
 
 class MCTS:
     def __init__(self, network) -> None:
