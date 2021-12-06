@@ -9,9 +9,10 @@ from Agent import *
 from ModelTools import twohead_evaluate
 
 model = typing.cast(
-    Model, keras.models.load_model("az_models/model_4.keras"))
+    Model, keras.models.load_model("az_models/model_6.keras"))
+print("Loaded model!")
 
-agent = AZAgent(model, "model_4", 500)
+agent = AZAgent(model, "model_6", 10)
 
 game = C4State()
 
@@ -20,6 +21,8 @@ while not game.is_terminal():
     agent_move = agent.get_action(game)
     print(agent_move)
     print(f"network evaluation of this position: {twohead_evaluate(game, agent.model)}")
+    print(f"network's instincts: {list(map(lambda x: round(float(x), 2), list(twohead_policy_vector(game, agent.model))))}")
+    print(f"final move distro: {list(map(lambda x: round(float(x)/sum(agent.last_dist), 2), agent.last_dist))}")
     game.push(agent_move)
     if game.is_terminal():
         break
