@@ -13,9 +13,9 @@ from tensorflow.keras.models import Model
 GAMES_PER_RUN = 1000
 ROLLOUTS = 50
 
-CURRENT_ITERATION = 4
-# starting_model_path = "az_models/random_model.keras"
-starting_model_path = f"az_models/model_{CURRENT_ITERATION}.keras"
+CURRENT_ITERATION = 0
+starting_model_path = "az_models/random_model.keras"
+# starting_model_path = f"az_models/model_{CURRENT_ITERATION}.keras"
 CURRENT_ITERATION += 1
 
 model: "Model" = typing.cast(
