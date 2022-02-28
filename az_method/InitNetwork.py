@@ -9,6 +9,9 @@ TTT_ACTION_SPACE = 9
 C4_DIM = (6, 7, 2)
 C4_ACTION_SPACE = 7
 
+DIM = C4_DIM
+ACTION_SPACE = C4_ACTION_SPACE
+
 FILTERS = 128
 KERNEL_SIZE = (3, 3)
 
@@ -39,10 +42,10 @@ def resnet_block(input_layer):
     return x
 
 input_layer = Input(
-    shape=C4_DIM, name="input")
+    shape=DIM, name="input")
 
 x = Conv2D(filters=FILTERS, kernel_size=KERNEL_SIZE, padding='same', strides=1,
-           activation='relu', input_shape=C4_DIM)(input_layer)
+           activation='relu', input_shape=DIM)(input_layer)
 
 x = resnet_block(x)
 x = resnet_block(x)
@@ -65,7 +68,7 @@ policy_head = Conv2D(
     activation='relu')(policy_head)
 policy_head = Flatten()(policy_head)
 
-policy_out = Dense(C4_ACTION_SPACE, activation="softmax",
+policy_out = Dense(ACTION_SPACE, activation="softmax",
                    name="policy_head")(policy_head)
 
 value_head = x
@@ -78,7 +81,7 @@ value_head = Conv2D(
 # then we do a convolution to 1x1x128 vector
 value_head = Conv2D(
     filters=128,
-    kernel_size=C4_DIM[0:2],
+    kernel_size=DIM[0:2],
     padding='valid',
     strides=1,
     activation='relu')(value_head)

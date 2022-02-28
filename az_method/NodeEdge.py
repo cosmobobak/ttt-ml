@@ -25,17 +25,19 @@ class Node:
             child_edge = Edge(m, self)
             child_node = Node(child_board, child_edge)
             self.child_edge_node.append((child_edge, child_node))
-        q = network(np.array([self.board.vectorise_chlast()]))
-        ps = q[0][0]
+
+        vector = np.array([self.board.vectorise_chlast()])
+        q = network(vector, training=False)
+        move_probabilities = q[0][0]
+        value = q[1][0][0]
         prob_sum = 0.0
         for edge, _ in self.child_edge_node:
             m_idx = edge.move # directly works as an index
-            edge.P = ps[m_idx]
+            edge.P = move_probabilities[m_idx]
             prob_sum += edge.P
         for edge, _ in self.child_edge_node:
             edge.P /= prob_sum
-        v = q[1][0][0]
-        return v
+        return value
 
     def is_leaf(self) -> bool:
         return len(self.child_edge_node) == 0

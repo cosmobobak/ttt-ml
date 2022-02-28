@@ -1,10 +1,13 @@
 import os
+from State import State
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import numpy as np
 from az_method.MonteCarloTreeSearch import MCTS
 from az_method.NodeEdge import Edge, Node
 from C4State import C4State
 from tensorflow.keras.models import Model
+
+TrainingState = C4State
 
 class ReinfLearn:
     def __init__(self, model: "Model") -> None:
@@ -15,7 +18,7 @@ class ReinfLearn:
         move_probs_data: "list[np.ndarray]" = []
         values_data: "list[float]" = []
 
-        g = C4State()
+        g = TrainingState()
         g.set_starting_position()
 
         while not g.is_terminal():
@@ -31,16 +34,16 @@ class ReinfLearn:
             mcts_seacher = MCTS(self.model)
 
             move_probs = mcts_seacher.search(root_node, sims=rollouts)
-            output_vec = np.zeros(C4State.ACTION_SPACE_SIZE)
+            output_vec = np.zeros(TrainingState.ACTION_SPACE_SIZE)
 
             for move, prob, _, _ in move_probs:
                 move_idx = move
                 output_vec[move_idx] = prob
 
-            # add dirichlet noise so we don't always just pick the best move, even when it's [1,0,0,0]
-            dirch_vec = add_dirichlet_noise(output_vec)
+            # add noise so we don't always just pick the best move, even when it's [1,0,0,0]
+            dirch_vec = squish_distribution(output_vec)
             # zero-out illegal moves and normalise
-            learning_vec = np.zeros(C4State.ACTION_SPACE_SIZE)
+            learning_vec = np.zeros(TrainingState.ACTION_SPACE_SIZE)
             for move, prob, _, _ in move_probs:
                 move_idx = move
                 learning_vec[move_idx] = dirch_vec[move_idx]
@@ -83,10 +86,13 @@ class ReinfLearn:
                 values_data.append(0.0)
         return positions_data, move_probs_data, values_data
 
-def add_dirichlet_noise(vec: "np.ndarray") -> "np.ndarray":
-    """
-    Add dirichlet noise to a vector
-    """
-    alpha = 1
-    noise = np.random.dirichlet(np.ones(len(vec)) * alpha)
-    return vec + noise
+
+BLUNTING_FACTOR = 0.3
+def squish_distribution(vec: "np.ndarray") -> "np.ndarray":
+    # make the policy less sharp
+    
+    # ones_mask = vec != 0
+    vec = vec + BLUNTING_FACTOR
+    # vec = vec * ones_mask
+    vec = vec / np.sum(vec)
+    return vec

@@ -2,7 +2,6 @@ import math
 import random
 from az_method.NodeEdge import Node, Edge
 from C4State import C4State
-from tqdm import tqdm
 
 class MCTS:
     def __init__(self, network) -> None:
@@ -21,6 +20,7 @@ class MCTS:
             max_uct_child = None
             max_uct_value = -100000000
             for edge, child_node in node.child_edge_node:
+                assert edge.parent_node is not None
                 uct_value = self.uct_value(edge, edge.parent_node.parent_edge.N)
                 val = edge.Q
                 if edge.parent_node.board.get_turn() == C4State.O:
@@ -31,6 +31,7 @@ class MCTS:
                     max_uct_value = uct_val_child
             all_best_children = []
             for edge, child_node in node.child_edge_node:
+                assert edge.parent_node is not None
                 uct_value = self.uct_value(edge, edge.parent_node.parent_edge.N)
                 val = edge.Q
                 if edge.parent_node.board.get_turn() == C4State.O:
@@ -42,8 +43,7 @@ class MCTS:
                 raise ValueError("could not identify best child")
             else:
                 if len(all_best_children) > 1:
-                    idx = random.randint(0, len(all_best_children) - 1)
-                    return self.select(all_best_children[idx])
+                    return self.select(random.choice(all_best_children))
                 else:
                     return self.select(max_uct_child)
 
@@ -81,5 +81,7 @@ class MCTS:
             N_sum += edge.N
         for edge, _ in root_node.child_edge_node:
             prob = (edge.N ** (1 / self.tau)) / (N_sum ** (1 / self.tau))
+            assert edge.move is not None
+            assert type(prob) is float
             move_probabilities.append((edge.move, prob, edge.N, edge.Q))
         return move_probabilities

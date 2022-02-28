@@ -9,12 +9,12 @@ from Agent import *
 from ModelTools import twohead_evaluate
 
 model = typing.cast(
-    Model, keras.models.load_model("az_models/model_6.keras"))
+    Model, keras.models.load_model("az_models/model_11.keras"))
 print("Loaded model!")
 
-agent = AZAgent(model, "model_6", 10)
+agent = AZAgent(model, "model_11", 50)
 
-game = C4State()
+game = State()
 
 while not game.is_terminal():
     print(game)

@@ -1,4 +1,4 @@
-from tensorflow.python.keras.engine.training import Model
+#from tensorflow.python.keras.engine.training import Model
 import numpy as np
 from random import choice
 from Hyperparameters import DEBUG
