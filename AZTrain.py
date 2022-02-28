@@ -13,8 +13,8 @@ import numpy as np
 from tensorflow.keras.models import Model
 
 RUNS = 100
-GAMES_PER_RUN = 20
-ROLLOUTS = 10
+GAMES_PER_RUN = 50
+ROLLOUTS = 50
 
 CURRENT_ITERATION = 0
 starting_model_path = "az_models/random_model.keras"
